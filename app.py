@@ -35,16 +35,18 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-#     """List all available api routes."""
+    sesion=Session(engine)
+    print("server received a request for 'Home' page")
     return (
-        f"Available Routes:<br/>"
-        f"/api/v1.0/precipitation<br/>"
-        f"/api/v1.0/stations"
-        f"/api/v1.0/tobs"
-        f"/api/v1.0/<start>"
-        f"/api/v1.0/<start>/<end>"
-    )
-
+            f"Available Routes:<br/>"
+            f"/api/v1.0/precipitation<br/>"
+            f"/api/v1.0/stations"
+            f"/api/v1.0/tobs"
+            f"/api/v1.0/<start>"
+            f"/api/v1.0/<start>/<end>"
+            )
+        
+    session.close()
 
 # @app.route("/api/v1.0/names")
 # def names():
