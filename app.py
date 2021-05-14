@@ -2,26 +2,28 @@ import numpy as np
 
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session, session
-from sqlalchemy import create_engine, func
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine, func, inspect
 
 from flask import Flask, jsonify
+
+import os
 
 #################################################
 # Database Setup
 #################################################
 
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 
 # reflect database into a new model
-Base = automap_base()
+base = automap_base()
 
 # reflect the tables
-Base.prepare(engine, reflect=True)
+base.prepare(engine, reflect=True)
 
 # Save reference to the tables
-Measurement = Base.classes.measurement
-Station = Base.classes.station
+Measurement = base.classes.measurement
+Station = base.classes.station
 
 #################################################
 # Flask Setup
@@ -47,5 +49,7 @@ def home():
     
 
 
-        
+#########        
     
+if __name__ == '__main__':
+    app.run(debug=True)
