@@ -82,7 +82,7 @@ def precip():
 def stations():
     session = Session(engine)
     
-    stationresults = session.query(Station.station).all()
+    stationresults = session.query(Station.station, Station.name).all()
    
     allstations = list(np.ravel(stationresults))
     
