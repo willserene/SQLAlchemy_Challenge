@@ -42,12 +42,15 @@ def home():
     
     return (
         f"Available Routes:<br/>"
+        f"<br/>"
         f"Precipitation Data: /api/v1.0/precipitation<br/>"
         f"Station Data: /api/v1.0/stations<br/>"
         f"Temperature Data: /api/v1.0/tobs<br/>"
-        f"Min, Avg, and Max Temp Data from *start date provided: /api/v1.0/temp/<start><br/>"
-        f"Min, Avg, and Max Temp Data from *start date to end date provided: /api/v1.0/temp/<start>/<end><br/>"
-        f"*Start Date and End Date should be provided as YYYY-MM-DD"
+        f"Min, Avg, and Max Temp Data from *start date provided: /api/v1.0/<startdate><br/>"
+        f"Min, Avg, and Max Temp Data from *start date to end date provided: /api/v1.0/<startdate>/<enddate><br/>"
+        f"<br/>"
+        f"  *Start Date and End Date should be provided as YYYY-MM-DD<br/>"
+        f"    *Route example: /api/v1.0/2016-04-15/2016-04-25"
     )
 
 
@@ -66,7 +69,7 @@ def precip():
     for date, prcp in precip_data:
         precipitation = {}
         precipitation["date"] = date
-        precipitation["prcp"] = prcp
+        precipitation["precipitation"] = prcp
         precipitation_list.append(precipitation)
         
     session.close()
@@ -109,14 +112,14 @@ def tobs():
 
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 
-@app.route("/api/v1.0/temp/<start>")
-# route example: /api/v1.0/temp/YYYY-MM-DD
-def tempdata_start(start = None):
+@app.route("/api/v1.0/<startdate>")
+# route example: /api/v1.0/YYYY-MM-DD
+def tempdata_start(startdate = None):
 
     session = Session(engine)
 
     tempdata = session.query(func.max(Measurement.tobs), func.min(Measurement.tobs), func.avg(Measurement.tobs)).\
-        filter(Measurement.date >= start).all()
+        filter(Measurement.date >= startdate).all()
    
     tempdata_results = list(np.ravel(tempdata))
 
@@ -126,7 +129,7 @@ def tempdata_start(start = None):
 
     tempdata_list = []
  
-    tempdata_return = [{"Start Date": start},
+    tempdata_return = [{"Start Date": startdate},
         {"The minimum temperature on record from this day forward was": tmin},
         {"The average temperature on record from this day forward was": tavg},
         {"The maximum temperature on record from this day forward was": tmax}]
@@ -138,14 +141,14 @@ def tempdata_start(start = None):
     
 #When given the start & the end date, calculate the 'TMIN', 'TAVG', & 'TMAX' for dates between the start & end date inclusive.
 
-@app.route("/api/v1.0/temp/<start>/<end>")
-# route example: /api/v1.0/temp/YYYY-MM-DD/YYY-MM-DD
-def tempdata_daterange(start = None , end = None):
+@app.route("/api/v1.0/<startdate>/<enddate>")
+# route example: /api/v1.0/YYYY-MM-DD/YYY-MM-DD
+def tempdata_daterange(startdate = None, enddate = None):
 
     session = Session(engine)
     
     tempdata = session.query(func.max(Measurement.tobs), func.min(Measurement.tobs), func.avg(Measurement.tobs)).\
-        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+        filter(Measurement.date >= startdate).filter(Measurement.date <= enddate).all()
 
     tempdata_results = list(np.ravel(tempdata))
 
@@ -155,7 +158,7 @@ def tempdata_daterange(start = None , end = None):
 
     tempdata_results = []
     
-    tempdata_return = [{"Start Date": start}, {"End Date": end},
+    tempdata_return = [{"Start Date": startdate}, {"End Date": enddate},
         {"The minimum temperature during this period of time was": tmin},
         {"The average temperature during this period of time was": tavg},
         {"The maximum temperature during this period of time was": tmax}]
