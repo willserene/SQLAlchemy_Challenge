@@ -123,9 +123,9 @@ def tempdata_start(startdate = None):
    
     tempdata_results = list(np.ravel(tempdata))
 
-    tmin = tempdata_results[0]
-    tavg = tempdata_results[1]
-    tmax = tempdata_results[2].round(1)
+    tmax = tempdata_results[0]
+    tmin = tempdata_results[1]
+    tavg = tempdata_results[2].round(1)
 
     session.close()
 
@@ -152,9 +152,9 @@ def tempdata_daterange(startdate = None, enddate = None):
 
     tempdata_results = list(np.ravel(tempdata))
 
-    tmin = tempdata_results[0]
-    tavg = tempdata_results[1]
-    tmax = tempdata_results[2].round(1)
+    tmax = tempdata_results[0]
+    tmin = tempdata_results[1]
+    tavg = tempdata_results[2].round(1)
 
     tempdata_results = []
     
