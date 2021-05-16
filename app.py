@@ -46,14 +46,13 @@ def home():
         f"Precipitation Data: /api/v1.0/precipitation<br/>"
         f"Station Data: /api/v1.0/stations<br/>"
         f"Temperature Data: /api/v1.0/tobs<br/>"
-        f"Min, Avg, and Max Temp Data from *start date provided: /api/v1.0/<startdate><br/>"
-        f"Min, Avg, and Max Temp Data from *start date to end date provided: /api/v1.0/<startdate>/<enddate><br/>"
         f"<br/>"
-        f"  *Start Date and End Date should be provided as YYYY-MM-DD<br/>"
-        f"    *Route example: /api/v1.0/2016-04-15/2016-04-25"
+        f"Min, Avg, and Max Temp Data from Start Date: /api/v1.0/<startdate><br/>"
+        f"Min, Avg, and Max Temp Data from Start Date to End Date: /api/v1.0/<startdate>/<enddate><br/>"
+        f"<br/>"
+        f"  *Input Start Date and End Date as YYYY-MM-DD<br/>"
+        f"    E.g. /api/v1.0/2016-04-15/2016-04-25"
     )
-
-
 
 @app.route("/api/v1.0/precipitation")
 def precip():
@@ -64,6 +63,8 @@ def precip():
     precip_data = session.query(func.strftime("%Y-%m-%d", Measurement.date), Measurement.prcp).\
         filter(func.strftime("%Y-%m-%d", Measurement.date) >= query_date).all()
 
+    session.close()
+
     precipitation_list = []
     
     for date, prcp in precip_data:
@@ -72,8 +73,6 @@ def precip():
         precipitation["precipitation"] = prcp
         precipitation_list.append(precipitation)
         
-    session.close()
-
     return jsonify(precipitation_list)
 
 # Return a JSON list of stations from the dataset.
@@ -98,12 +97,13 @@ def stations():
 def tobs():
     session = Session(engine)
     
-    active_station = "USC00519281"
     query_date = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+    active_station = "USC00519281"
     
     station_data = session.query(Measurement.date, Measurement.tobs).\
         filter(Measurement.date >= query_date).\
         filter(Measurement.station == active_station).all()
+
     most_active = list(np.ravel(station_data))
 
     session.close()
@@ -125,7 +125,9 @@ def tempdata_start(startdate = None):
 
     tmin = tempdata_results[0]
     tavg = tempdata_results[1]
-    tmax = tempdata_results[2]
+    tmax = tempdata_results[2].round(1)
+
+    session.close()
 
     tempdata_list = []
  
@@ -134,8 +136,6 @@ def tempdata_start(startdate = None):
         {"The average temperature on record from this day forward was": tavg},
         {"The maximum temperature on record from this day forward was": tmax}]
     tempdata_list.append(tempdata_return)
-
-    session.close()
 
     return jsonify(tempdata_list)
     
@@ -154,7 +154,7 @@ def tempdata_daterange(startdate = None, enddate = None):
 
     tmin = tempdata_results[0]
     tavg = tempdata_results[1]
-    tmax = tempdata_results[2]
+    tmax = tempdata_results[2].round(1)
 
     tempdata_results = []
     
