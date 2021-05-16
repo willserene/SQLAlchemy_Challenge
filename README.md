@@ -13,3 +13,5 @@ This challenge was an intense learning experience that included the following:
 - Extracting query variable path values.
 - Using variable paths to execute database queries on behalf of the client.
 - Returning JSONified query results from API endpoints.
+
+Bonus folder currenty only has the starter code. To be completed soon. 
