@@ -38,21 +38,30 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
+
+    url = 'http://127.0.0.1:5000'
+
     print("server received a request for 'Home' page")
     
-    return (
-        f"Available Routes:<br/>"
-        f"<br/>"
-        f"Precipitation Data: /api/v1.0/precipitation<br/>"
-        f"Station Data: /api/v1.0/stations<br/>"
-        f"Temperature Data: /api/v1.0/tobs<br/>"
-        f"<br/>"
-        f"Min, Avg, and Max Temp Data from Start Date: /api/v1.0/<startdate><br/>"
-        f"Min, Avg, and Max Temp Data from Start Date to End Date: /api/v1.0/<startdate>/<enddate><br/>"
-        f"<br/>"
-        f"  *Input Start Date and End Date as YYYY-MM-DD<br/>"
-        f"    E.g. /api/v1.0/2016-04-15/2016-04-25"
+    routes = (
+        f"<b>API Routes:</b> <p>"
+        f"<a href = " + url + "/api/v1.0/precipitation target = '_blank'>" + "/api/v1.0/precipitation" + "</a> <p>"
+        f"<a href = " + url + "/api/v1.0/stations target = '_blank'>" + "/api/v1.0/stations" + "</a> <p>"
+        f"<a href = " + url + "/api/v1.0/tobs target = '_blank'>" + "/api/v1.0/tobs" + "</a> <p>"
+        f"<a href = " + url + "/api/v1.0/YYYY-MM-DD target = '_blank'>" + "/api/v1.0/<startdate>YYYY-MM-DD" + "</a> <p>"
+        f"<a href = " + url + "/api/v1.0/YYYY-MM-DD/YYYY-MM-DD target = '_blank'>" + "/api/v1.0/<startdate>/<enddate>YYYY-MM-DD/YYYY-MM-DD" + "</a> <p>"
     )
+    return routes
+    
+    #     f"Station Data: /api/v1.0/stations<br/>"
+    #     f"Temperature Data: /api/v1.0/tobs<br/>"
+    #     f"<br/>"
+    #     f"Min, Avg, and Max Temp Data from Start Date: /api/v1.0/<startdate><br/>"
+    #     f"Min, Avg, and Max Temp Data from Start Date to End Date: /api/v1.0/<startdate>/<enddate><br/>"
+    #     f"<br/>"
+    #     f"  *Input Start Date and End Date as YYYY-MM-DD<br/>"
+    #     f"    E.g. /api/v1.0/2016-04-15/2016-04-25"
+    # )
 
 @app.route("/api/v1.0/precipitation")
 def precip():
